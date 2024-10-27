@@ -11,7 +11,6 @@ const steps = [
 
 export default function Stepper() {
   const pathname = usePathname();
-  console.log(pathname);
   const currentStep = pathname.split('/').pop(); // e.g., "step1", "step2"
 
   return (

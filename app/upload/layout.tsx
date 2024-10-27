@@ -4,8 +4,8 @@ import Link from 'next/link';
 
 const uploadDayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <>
-      <header className="px-16 py-11">
+    <div className="mx-auto min-h-screen max-w-screen-lg">
+      <header className="px-16 pt-11">
         <nav>
           <Link href="/">
             <Logo />
@@ -13,8 +13,10 @@ const uploadDayout = ({ children }: { children: React.ReactNode }) => {
           <Stepper />
         </nav>
       </header>
-      <main>{children}</main>
-    </>
+      <main className="flex flex-col items-center justify-center">
+        {children}
+      </main>
+    </div>
   );
 };
 
