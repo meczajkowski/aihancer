@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 const uploadDayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="mx-auto min-h-screen max-w-screen-lg">
+    <div className="mx-auto min-h-screen max-w-screen-lg p-5">
       <header className="px-16 pt-11">
         <nav>
           <Link href="/">
