@@ -14,7 +14,7 @@ export default function Stepper() {
   const currentStep = pathname.split('/').pop(); // e.g., "step1", "step2"
 
   return (
-    <div className="mx-auto mb-8 flex w-full max-w-md items-center justify-center">
+    <div className="relative mx-auto mb-8 flex w-full max-w-md items-center justify-center">
       {steps.map((step, index) => (
         <React.Fragment key={index}>
           <Link href={`/upload/step${index + 1}`}>
@@ -49,10 +49,7 @@ export default function Stepper() {
           </Link>
 
           {index < steps.length - 1 && (
-            <div
-              className="mx-2 h-px flex-1 bg-gray-300"
-              style={{ marginTop: '1rem' }}
-            ></div>
+            <div className="relative bottom-3 mx-2 h-px flex-1 bg-gray-300"></div>
           )}
         </React.Fragment>
       ))}

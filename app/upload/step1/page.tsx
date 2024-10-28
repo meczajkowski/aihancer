@@ -32,8 +32,8 @@ const Step1 = () => {
   };
 
   return (
-    <form action={handleSubmit}>
-      <div className="my-5 w-[606px] rounded-lg border bg-white p-6 shadow-[0_0_100px_100px_rgba(255,255,255,1)]">
+    <form action={handleSubmit} className="w-full max-w-[606px]">
+      <div className="my-5 rounded-lg border bg-white p-6 shadow-[0_0_100px_100px_rgba(255,255,255,1)]">
         <h3>Upload your resume</h3>
         <span className="text-xs">Accepted types: PDF, docx</span>
         <div
