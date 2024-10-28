@@ -1,30 +1,9 @@
 'use client';
 
+import { extractTextFromPDF } from '@/app/actions/extractTextFromFile';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { cn, validateFile } from '@/lib/utils';
 import { useState, useTransition } from 'react';
-
-const allowedFileTypes = [
-  'application/pdf',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-];
-const maxFileSize = 2 * 1024 * 1024; // 2MB
-
-const validateFile = (file: File | null) => {
-  if (!file) {
-    return 'File is required.';
-  }
-
-  if (!allowedFileTypes.includes(file.type)) {
-    return 'Invalid file type. Only PDF and DOCX files are allowed.';
-  }
-
-  if (file.size > maxFileSize) {
-    return `File size exceeds the ${maxFileSize / 1024 / 1024}MB limit.`;
-  }
-
-  return null;
-};
 
 const Step1 = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -34,20 +13,21 @@ const Step1 = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = e.target.files?.[0] || null;
 
-    const validationError = validateFile(uploadedFile);
-    if (validationError) {
-      setError(validationError);
+    if (!uploadedFile) {
+      setError('File is required.');
       return;
     }
+
+    const validationError = validateFile(uploadedFile);
+    if (validationError) setError(validationError);
 
     setError(null);
     setFile(uploadedFile);
   };
 
   const handleSubmit = async (formData: FormData) => {
-    startTransition(() => {
-      const file = formData.get('cv-file');
-      console.log(file);
+    startTransition(async () => {
+      await extractTextFromPDF(formData);
     });
   };
 
