@@ -27,7 +27,8 @@ const Step1 = () => {
 
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
-      await extractTextFromPDF(formData);
+      const extractedText = await extractTextFromPDF(formData);
+      console.log(extractedText);
     });
   };
 
