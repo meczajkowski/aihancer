@@ -1,7 +1,9 @@
 'use client';
 
 import { extractTextFromPDF } from '@/app/actions/extractTextFromFile';
+import { getAnonToken } from '@/app/actions/getAnonToken';
 import { Button } from '@/components/ui/button';
+import { createCV } from '@/lib/prisma/CV.service';
 import { cn, validateFile } from '@/lib/utils';
 import { useState, useTransition } from 'react';
 
@@ -27,8 +29,17 @@ const Step1 = () => {
 
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
-      const extractedText = await extractTextFromPDF(formData);
+      const extractedText: string = await extractTextFromPDF(formData);
+      const anonToken: string = await getAnonToken(); // get or set the anon-token
+      const data = await createCV({ extractedText, anonToken });
+      console.log('extractedText');
       console.log(extractedText);
+
+      console.log('anonToken');
+      console.log(anonToken);
+
+      console.log('data');
+      console.log(data);
     });
   };
 
