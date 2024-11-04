@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+
+model CV {
+  id             String     @id @default(uuid())
+  extractedText  String
+  anonToken      String?    
+  userId         String?    // Optional reference to User model if the CV is linked to an authenticated user
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  
+  // Relation to User model, if user signs in later
+  // user           User?      @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+// model User {
+//   id             String     @id @default(uuid())
+//   email          String     @unique
+//   passwordHash   String     // Store password hash if using email/password authentication
+//   createdAt      DateTime   @default(now())
+//   updatedAt      DateTime   @updatedAt
+
+//   // Relation to CVs submitted by this user
+//   cvs            CV[]
+// }
