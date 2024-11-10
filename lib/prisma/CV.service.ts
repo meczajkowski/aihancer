@@ -9,12 +9,16 @@ export const createCV = async ({
   extractedText: string;
   anonToken: string;
 }) => {
-  const data = await prisma.cV.create({
-    data: {
-      extractedText,
-      anonToken,
-    },
-  });
-
-  return data;
+  try {
+    const data = await prisma.cV.create({
+      data: {
+        extractedText,
+        anonToken,
+      },
+    });
+    return data;
+  } catch (error) {
+    console.error('Failed to upload CV:', error);
+    throw new Error('Failed to upload CV. Please try again later.');
+  }
 };
