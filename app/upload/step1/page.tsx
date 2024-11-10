@@ -2,15 +2,19 @@
 
 import { extractTextFromPDF } from '@/app/actions/extractTextFromFile';
 import { getAnonToken } from '@/app/actions/getAnonToken';
+import { useUploadFormData } from '@/app/contexts/FormDataContext';
 import { Button } from '@/components/ui/button';
 import { createCV } from '@/lib/prisma/CV.service';
 import { cn, validateFile } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
 const Step1 = () => {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const { setUploadFormData } = useUploadFormData();
+  const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const uploadedFile = e.target.files?.[0] || null;
@@ -21,25 +25,30 @@ const Step1 = () => {
     }
 
     const validationError = validateFile(uploadedFile);
-    if (validationError) setError(validationError);
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
 
     setError(null);
     setFile(uploadedFile);
+    setUploadFormData({ file: uploadedFile });
   };
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleSubmit = async (form: FormData) => {
     startTransition(async () => {
-      const extractedText: string = await extractTextFromPDF(formData);
-      const anonToken: string = await getAnonToken(); // get or set the anon-token
-      const data = await createCV({ extractedText, anonToken });
-      console.log('extractedText');
-      console.log(extractedText);
+      try {
+        const extractedText = await extractTextFromPDF(form);
+        const anonToken = await getAnonToken();
+        const data = await createCV({ extractedText, anonToken });
 
-      console.log('anonToken');
-      console.log(anonToken);
-
-      console.log('data');
-      console.log(data);
+        setUploadFormData({ extractedText: data.extractedText });
+        router.push('/upload/step2');
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : 'An unexpected error occurred.',
+        );
+      }
     });
   };
 

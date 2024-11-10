@@ -1,5 +1,6 @@
 'use client';
 
+import { useUploadFormData } from '@/app/contexts/FormDataContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,6 +11,9 @@ const Step2 = () => {
   const [companyName, setCompanyName] = useState('');
   const [jobDescription, setJobDescription] = useState('');
   const [isPending, startTransition] = useTransition();
+
+  const { uploadFormData } = useUploadFormData();
+  console.log(uploadFormData);
 
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
