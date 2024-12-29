@@ -1,9 +1,11 @@
 'use client';
 
+import { enhance } from '@/app/actions/enhanceCV';
 import { useUploadFormData } from '@/app/contexts/FormDataContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
 const Step2 = () => {
@@ -12,12 +14,31 @@ const Step2 = () => {
   const [jobDescription, setJobDescription] = useState('');
   const [isPending, startTransition] = useTransition();
 
-  const { uploadFormData } = useUploadFormData();
-  console.log(uploadFormData);
+  const { uploadFormData, setUploadFormData } = useUploadFormData();
+  const router = useRouter();
 
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
-      console.log(formData);
+      const jobTitle = formData.get('jobTitle') as string;
+      const companyName = formData.get('companyName') as string;
+      const jobDescription = formData.get('jobDescription') as string;
+      const resumeText = uploadFormData.extractedText as string;
+
+      const enhancedCv = await enhance(
+        resumeText,
+        jobTitle,
+        companyName,
+        jobDescription,
+      );
+      console.log(enhancedCv.enhancedCv);
+
+      setUploadFormData({
+        jobTitle,
+        companyName,
+        jobDescription,
+        enhancedCv: enhancedCv.enhancedCv,
+      });
+      router.push('/upload/step3');
     });
   };
 

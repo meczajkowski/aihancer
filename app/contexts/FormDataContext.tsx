@@ -1,11 +1,16 @@
 'use client';
 
+import { CVData } from '@/schemas/classicCvTemplateSchema';
 import { createContext, ReactNode, useContext, useState } from 'react';
 
 interface UploadFormData {
   file: File | null;
   extractedText: string | null;
   anonToken: string | null;
+  jobTitle: string | null;
+  companyName: string | null;
+  jobDescription: string | null;
+  enhancedCv: CVData | null;
 }
 
 interface UploadFormDataContextType {
@@ -26,6 +31,10 @@ export const UploadFormDataProvider = ({
     file: null,
     extractedText: null,
     anonToken: null,
+    jobTitle: null,
+    companyName: null,
+    jobDescription: null,
+    enhancedCv: null,
   });
 
   const setUploadFormData = (data: Partial<UploadFormData>) => {
