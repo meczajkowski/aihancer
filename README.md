@@ -1,3 +1,9 @@
+![image](https://github.com/user-attachments/assets/ee636550-8fa0-4d41-a94f-a060151e9a0f)
+
+Live: https://aihancer.netlify.app/
+
+
+
 ### Proof of Concept  
 Currently, the AI CV Enhancer is in the **proof of concept stage**. While the core features are functional, there may be some bugs, errors, or instability as the project is still being refined. Your feedback is invaluable to help us improve and bring the application to its full potential.  
 
@@ -6,6 +12,8 @@ Currently, the AI CV Enhancer is in the **proof of concept stage**. While the co
 **Enhance and personalize your CV for specific job opportunities using AI.**  
 
 Welcome to the **AI CV Enhancer**, an innovative application designed to take your CV to the next level!  
+
+![image](https://github.com/user-attachments/assets/dde356d9-b112-4a06-a3c3-79e56dffc2ed)
 
 ## Features  
 - **AI-Driven CV Enhancement**: Upload your existing CV, and let the app improve its content, format, and structure for a professional edge.  
