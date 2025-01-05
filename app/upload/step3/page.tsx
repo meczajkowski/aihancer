@@ -1,41 +1,17 @@
 'use client';
-import { useUploadFormData } from '@/app/contexts/FormDataContext';
+// import { useUploadFormData } from '@/app/contexts/FormDataContext';
 import { CV } from '@/components/CV/CV';
+import { PDFDocument } from '@/components/CV/CvPdf';
 import { Button } from '@/components/ui/button';
+import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import Link from 'next/link';
+import { useState } from 'react';
+import { mockedCV as enhancedCv } from './mockedCV';
 
 const Step3 = () => {
-  const { uploadFormData } = useUploadFormData();
-  console.log(uploadFormData);
-
-  const { enhancedCv } = uploadFormData;
-
-  const downloadCV = async () => {
-    // const element = document.getElementById('cv-to-download');
-    // if (element) {
-    //   // Capture the content of the CV
-    //   const canvas = await html2canvas(element, { scale: 1.5 }); // Use scale 1 for normal size
-    //   const pdf = new jsPDF('p', 'mm', 'a4'); // 'p' for portrait, 'mm' for mm, 'a4' for A4 size
-    //   const imgData = canvas.toDataURL('image/png');
-    //   const imgWidth = pdf.internal.pageSize.getWidth(); // A4 width in mm
-    //   const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
-    //   const pageHeight = pdf.internal.pageSize.getHeight(); // A4 height in mm
-    //   let heightLeft = imgHeight;
-    //   let position = 0;
-    //   // Add the first image to the PDF
-    //   pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    //   heightLeft -= pageHeight;
-    //   // If the image height exceeds one page, add more pages
-    //   while (heightLeft >= 0) {
-    //     position = heightLeft - imgHeight;
-    //     pdf.addPage();
-    //     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    //     heightLeft -= pageHeight;
-    //   }
-    //   // Save the PDF with a specified filename
-    //   pdf.save('cv.pdf');
-    // }
-  };
+  // const { uploadFormData } = useUploadFormData();
+  // const { enhancedCv } = uploadFormData;
+  const [showPdfPreview, setShowPdfPreview] = useState(false);
 
   return (
     <>
@@ -89,14 +65,35 @@ const Step3 = () => {
               <Button variant="outline">
                 <Link href="/upload/step1">Adjust to next offer</Link>
               </Button>
-              <Button disabled onClick={downloadCV}>
-                Download CV
+              <Button onClick={() => setShowPdfPreview(!showPdfPreview)}>
+                {showPdfPreview ? 'Hide PDF Preview' : 'Show PDF Preview'}
               </Button>
+              <PDFDownloadLink
+                document={<PDFDocument data={enhancedCv} />}
+                fileName={`${enhancedCv.name.replace(/\s+/g, '_')}_CV.pdf`}
+              >
+                {/* @ts-expect-error - ddd */}
+                {({ loading }) => (
+                  <Button disabled={loading}>
+                    {loading ? 'Preparing PDF...' : 'Download PDF'}
+                  </Button>
+                )}
+              </PDFDownloadLink>
             </div>
           </div>
 
-          <div id="cv-to-download" className="box-border h-[296mm] w-[210mm]">
-            {enhancedCv ? <CV data={enhancedCv} /> : <p>Loading...</p>}
+          <div className="flex gap-8">
+            <div className="box-border h-[296mm] w-[210mm] border border-gray-200">
+              <CV data={enhancedCv} />
+            </div>
+
+            {!showPdfPreview && (
+              <div className="h-[296mm] w-[210mm]">
+                <PDFViewer width="100%" height="100%" showToolbar={false}>
+                  <PDFDocument data={enhancedCv} />
+                </PDFViewer>
+              </div>
+            )}
           </div>
         </div>
       </div>
