@@ -1,6 +1,6 @@
 'use client';
 import { useUploadFormData } from '@/app/contexts/FormDataContext';
-import { PDFDocument } from '@/components/CV/CvPdf';
+import { PDFDocument } from '@/components/CvTemplates/BruxaCvTemplate';
 import { Button } from '@/components/ui/button';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import Link from 'next/link';

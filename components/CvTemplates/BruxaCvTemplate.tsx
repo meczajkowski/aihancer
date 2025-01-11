@@ -171,7 +171,6 @@ export const PDFDocument = ({ data }: { data: CVData }) => (
                   </Text>
                   <Text style={styles.text}>{edu?.year}</Text>
                 </View>
-                {/* <Text style={styles.text}>{edu.description}</Text> */}
                 <Text style={styles.text}>{edu?.degree}</Text>
               </View>
             ))}
