@@ -8,27 +8,25 @@ import {
   View,
 } from '@react-pdf/renderer';
 
-// Register fonts
-Font.register({
-  family: 'Open Sans',
-  fonts: [
-    {
-      src: 'https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-regular.ttf',
-    },
-    {
-      src: 'https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-600.ttf',
-      fontWeight: 600,
-    },
-  ],
-});
 Font.register({
   family: 'Inter',
-  src: 'https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-ext-400-normal.ttf',
+  fonts: [
+    {
+      src: '/fonts/Inter-Regular.ttf',
+    },
+    {
+      src: '/fonts/Inter-SemiBold.ttf',
+      fontWeight: 600,
+    },
+    {
+      src: '/fonts/Inter-Bold.ttf',
+      fontWeight: 700,
+    },
+  ],
 });
 
 const styles = StyleSheet.create({
   page: {
-    // fontFamily: 'Open Sans',
     fontFamily: 'Inter',
     padding: 30,
     flexDirection: 'row',
@@ -39,25 +37,38 @@ const styles = StyleSheet.create({
   },
   rightColumn: {
     width: '60%',
+    paddingTop: 5,
     paddingLeft: 15,
   },
   section: {
-    marginBottom: 10,
+    marginBottom: 16,
   },
   title: {
-    fontSize: 14,
-    fontWeight: 600,
-    marginBottom: 5,
+    marginBottom: 8,
+    fontSize: 10,
+    fontStyle: 'normal',
+    fontWeight: 700,
+    lineHeight: '180%',
+    letterSpacing: '-0.3px',
     textTransform: 'uppercase',
   },
   text: {
     fontSize: 10,
     marginBottom: 3,
+    color: '#474F53',
+  },
+  positionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   name: {
     fontSize: 24,
     fontWeight: 600,
     marginBottom: 20,
+    fontStyle: 'normal',
+    lineHeight: '100%',
+    letterSpacing: '-1',
   },
 });
 
@@ -102,11 +113,20 @@ export const PDFDocument = ({ data }: { data: CVData }) => (
             </Text>
           ))}
         </View>
+
+        <View style={styles.section}>
+          <Text style={styles.title}>disclaimer</Text>
+          <Text
+            style={styles.text}
+          >{`I hereby consent to my personal data being processed by ${data.disclaimer.companyName} for the purpose of considering my application for the vacancy advertised under reference number ${data.disclaimer.referenceNumber}`}</Text>
+        </View>
       </View>
 
       <View style={styles.rightColumn}>
         <View style={styles.section}>
-          <Text style={styles.text}>{data.positionTitle}</Text>
+          <Text style={[styles.text, { fontSize: 15 }]}>
+            {data.positionTitle}
+          </Text>
         </View>
 
         <View style={styles.section}>
@@ -119,14 +139,44 @@ export const PDFDocument = ({ data }: { data: CVData }) => (
           {data.experience.map((exp, i) => (
             <View key={i} style={styles.section}>
               <Text style={styles.text}>{exp.companyName}</Text>
-              <Text style={[styles.text, { fontWeight: 600 }]}>
-                {exp.positionName}
-              </Text>
-              <Text style={styles.text}>{exp.date}</Text>
+              <View style={styles.positionContainer}>
+                <Text
+                  style={[
+                    styles.text,
+                    { fontWeight: 600, fontSize: '15px', color: '#000' },
+                  ]}
+                >
+                  {exp.positionName}
+                </Text>
+                <Text style={styles.text}>{exp.date}</Text>
+              </View>
               <Text style={styles.text}>{exp.description}</Text>
             </View>
           ))}
         </View>
+        {data.education && data.education.length > 0 && (
+          <View style={styles.section}>
+            <Text style={styles.title}>Education</Text>
+            {data.education.map((edu, i) => (
+              <View key={i} style={styles.section}>
+                <Text style={styles.text}>{edu?.schoolName}</Text>
+                <View style={styles.positionContainer}>
+                  <Text
+                    style={[
+                      styles.text,
+                      { fontWeight: 600, fontSize: '15px', color: '#000' },
+                    ]}
+                  >
+                    {edu?.studyName}
+                  </Text>
+                  <Text style={styles.text}>{edu?.year}</Text>
+                </View>
+                {/* <Text style={styles.text}>{edu.description}</Text> */}
+                <Text style={styles.text}>{edu?.degree}</Text>
+              </View>
+            ))}
+          </View>
+        )}
       </View>
     </Page>
   </Document>

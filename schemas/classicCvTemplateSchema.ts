@@ -21,6 +21,10 @@ const EducationSchema = z
       .string()
       .optional()
       .describe('do not fill if not provided in original cv in prompt.'),
+    degree: z
+      .string()
+      .optional()
+      .describe('do not fill if not provided in original cv in prompt.'),
     year: z
       .string()
       .optional()
