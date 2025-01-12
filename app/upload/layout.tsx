@@ -7,8 +7,8 @@ const uploadDayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <UploadFormDataProvider>
       <div className="mx-auto min-h-screen max-w-screen-lg p-5">
-        <header className="px-16 pt-11">
-          <nav>
+        <header className="pt-3 sm:px-16 md:pt-11">
+          <nav className="flex flex-col gap-11">
             <Link href="/">
               <Logo />
             </Link>

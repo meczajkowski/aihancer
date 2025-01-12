@@ -24,7 +24,7 @@ export default function Stepper() {
   };
 
   return (
-    <div className="relative mx-auto mb-8 flex w-full max-w-md items-center justify-center">
+    <div className="relative mx-auto mb-8 flex w-full max-w-xs items-center justify-center md:max-w-md">
       {steps.map((step, index) => (
         <React.Fragment key={index}>
           <Link
@@ -33,14 +33,14 @@ export default function Stepper() {
           >
             <div className="relative flex cursor-pointer flex-col items-center">
               <div
-                className={`flex h-8 w-8 items-center justify-center rounded-full border ${
+                className={`flex h-6 w-6 items-center justify-center rounded-full border md:h-9 md:w-9 ${
                   `step${index + 1}` === currentStep
                     ? 'border-gray-800'
                     : 'border-gray-300'
                 } bg-transparent`}
               >
                 <span
-                  className={`text-sm font-medium ${
+                  className={`text-xs font-medium md:text-lg ${
                     `step${index + 1}` === currentStep
                       ? 'text-gray-800'
                       : 'text-gray-400'
@@ -50,7 +50,7 @@ export default function Stepper() {
                 </span>
               </div>
               <span
-                className={`mt-2 text-xs ${
+                className={`mt-2 max-w-14 text-center text-xs md:max-w-none md:text-sm ${
                   `step${index + 1}` === currentStep
                     ? 'font-medium text-gray-800'
                     : 'text-gray-400'
@@ -62,7 +62,7 @@ export default function Stepper() {
           </Link>
 
           {index < steps.length - 1 && (
-            <div className="relative bottom-3 mx-2 h-px flex-1 bg-gray-300"></div>
+            <div className="relative bottom-5 mx-2 h-px flex-1 bg-gray-300 md:bottom-3"></div>
           )}
         </React.Fragment>
       ))}
