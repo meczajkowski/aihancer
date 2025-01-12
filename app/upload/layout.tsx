@@ -8,10 +8,12 @@ const uploadDayout = ({ children }: { children: React.ReactNode }) => {
     <UploadFormDataProvider>
       <div className="mx-auto min-h-screen max-w-screen-lg p-5">
         <header className="pt-3 sm:px-16 md:pt-11">
-          <nav className="flex flex-col gap-11">
-            <Link href="/">
-              <Logo />
-            </Link>
+          <nav className="flex flex-col gap-9">
+            <div>
+              <Link href="/" className="inline-block">
+                <Logo />
+              </Link>
+            </div>
             <Stepper />
           </nav>
         </header>
