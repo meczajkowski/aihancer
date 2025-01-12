@@ -5,7 +5,7 @@ import { useUploadFormData } from '@/app/contexts/FormDataContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
 const Step2 = () => {
@@ -37,11 +37,14 @@ const Step2 = () => {
         companyName,
         jobDescription,
         enhancedCv: enhancedCv.enhancedCv,
+        completedSteps: [1, 2],
       });
       router.push('/upload/step3');
     });
   };
 
+  if (!uploadFormData.completedSteps.includes(1))
+    return redirect('/upload/step1');
   return (
     <form action={handleSubmit} className="w-full max-w-[606px] space-y-4">
       <div>

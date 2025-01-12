@@ -42,7 +42,10 @@ const Step1 = () => {
         const anonToken = await getAnonToken();
         const data = await createCV({ extractedText, anonToken });
 
-        setUploadFormData({ extractedText: data.extractedText });
+        setUploadFormData({
+          extractedText: data.extractedText,
+          completedSteps: [1],
+        });
         router.push('/upload/step2');
       } catch (err) {
         setError(
