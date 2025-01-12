@@ -21,6 +21,10 @@ const EducationSchema = z
       .string()
       .optional()
       .describe('do not fill if not provided in original cv in prompt.'),
+    degree: z
+      .string()
+      .optional()
+      .describe('do not fill if not provided in original cv in prompt.'),
     year: z
       .string()
       .optional()
@@ -54,22 +58,28 @@ export const classicCVTemplateSchema = z.object({
         'Find me item cannot be empty. Links - ie. linkedin, github, portfolio.',
       ),
   ),
-  skills: z.array(
-    z
-      .string()
-      .min(1)
-      .describe(
-        'Skill cannot be empty. personal skills. Soft skills. not technologies',
-      ),
-  ),
-  technologies: z.array(
-    z
-      .string()
-      .min(1)
-      .describe(
-        'Technology cannot be empty. technologies you use. hard skills. ie. react, next.js, MVC',
-      ),
-  ),
+  skills: z
+    .array(
+      z
+        .string()
+        .min(1)
+        .describe(
+          'Skill cannot be empty. personal skills. Soft skills. not technologies',
+        ),
+    )
+    .max(6)
+    .describe('Max 6 skills. If more, list the most important.'),
+  technologies: z
+    .array(
+      z
+        .string()
+        .min(1)
+        .describe(
+          'Technology cannot be empty. technologies you use. hard skills. ie. react, next.js, MVC',
+        ),
+    )
+    .max(15)
+    .describe('Max 15 technologies. If more, list the most important.'),
   courses: z.array(
     z
       .string()
