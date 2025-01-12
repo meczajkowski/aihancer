@@ -11,6 +11,7 @@ interface UploadFormData {
   companyName: string | null;
   jobDescription: string | null;
   enhancedCv: CVData | null;
+  completedSteps: number[];
 }
 
 interface UploadFormDataContextType {
@@ -35,6 +36,7 @@ export const UploadFormDataProvider = ({
     companyName: null,
     jobDescription: null,
     enhancedCv: null,
+    completedSteps: [],
   });
 
   const setUploadFormData = (data: Partial<UploadFormData>) => {

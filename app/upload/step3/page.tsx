@@ -4,19 +4,13 @@ import { PDFDocument } from '@/components/CvTemplates/BruxaCvTemplate';
 import { Button } from '@/components/ui/button';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 const Step3 = () => {
   const { uploadFormData } = useUploadFormData();
   const { enhancedCv } = uploadFormData;
 
-  if (!enhancedCv)
-    return (
-      <main>
-        <h2 className="mb-4 text-xl font-semibold">
-          Please go back and upload your CV
-        </h2>
-      </main>
-    );
+  if (!enhancedCv) return redirect('/upload/step1');
 
   return (
     <main className="pb-8">
