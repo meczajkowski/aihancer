@@ -3,8 +3,7 @@
 import { validateFile } from '@/lib/utils';
 import officeparser from 'officeparser';
 
-export async function extractTextFromPDF(formData: FormData) {
-  const file = formData.get('cv-file') as File | null;
+export async function extractTextFromPDF(file: File) {
   if (!file) throw new Error('File is required.');
 
   const validationError = validateFile(file);

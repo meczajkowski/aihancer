@@ -7,11 +7,10 @@ interface UploadFormData {
   file: File | null;
   extractedText: string | null;
   anonToken: string | null;
-  jobTitle: string | null;
-  companyName: string | null;
-  jobDescription: string | null;
+  jobTitle: string;
+  companyName: string;
+  jobDescription: string;
   enhancedCv: CVData | null;
-  completedSteps: number[];
 }
 
 interface UploadFormDataContextType {
@@ -32,11 +31,10 @@ export const UploadFormDataProvider = ({
     file: null,
     extractedText: null,
     anonToken: null,
-    jobTitle: null,
-    companyName: null,
-    jobDescription: null,
+    jobTitle: '',
+    companyName: '',
+    jobDescription: '',
     enhancedCv: null,
-    completedSteps: [],
   });
 
   const setUploadFormData = (data: Partial<UploadFormData>) => {

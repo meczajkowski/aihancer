@@ -4,13 +4,17 @@ import { PDFDocument } from '@/components/CvTemplates/BruxaCvTemplate';
 import { Button } from '@/components/ui/button';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 const Step3 = () => {
   const { uploadFormData } = useUploadFormData();
   const { enhancedCv } = uploadFormData;
 
-  if (!enhancedCv) return redirect('/upload/step1');
+  if (!enhancedCv)
+    return (
+      <main>
+        <p>Please complete the form first</p>
+      </main>
+    );
 
   return (
     <main className="pb-8">

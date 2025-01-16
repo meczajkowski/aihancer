@@ -1,17 +1,16 @@
 'use client';
 
 import { enhance } from '@/app/actions/enhanceCV';
+import { getAnonToken } from '@/app/actions/getAnonToken';
 import { useUploadFormData } from '@/app/contexts/FormDataContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { redirect, useRouter } from 'next/navigation';
-import { useState, useTransition } from 'react';
+import { getLastCVbyAnonToken } from '@/lib/prisma/CV.service';
+import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 
 const Step2 = () => {
-  const [jobTitle, setJobTitle] = useState('');
-  const [companyName, setCompanyName] = useState('');
-  const [jobDescription, setJobDescription] = useState('');
   const [isPending, startTransition] = useTransition();
 
   const { uploadFormData, setUploadFormData } = useUploadFormData();
@@ -22,29 +21,27 @@ const Step2 = () => {
       const jobTitle = formData.get('jobTitle') as string;
       const companyName = formData.get('companyName') as string;
       const jobDescription = formData.get('jobDescription') as string;
-      const resumeText = uploadFormData.extractedText as string;
-
+      const anonToken = await getAnonToken();
+      const resumeData = await getLastCVbyAnonToken(anonToken);
+      if (!resumeData) {
+        alert('No resume data found. Please upload your resume first.');
+        return;
+      }
       const enhancedCv = await enhance(
-        resumeText,
+        resumeData?.extractedText as string,
         jobTitle,
         companyName,
         jobDescription,
       );
-      console.log(enhancedCv.enhancedCv);
 
       setUploadFormData({
-        jobTitle,
-        companyName,
-        jobDescription,
         enhancedCv: enhancedCv.enhancedCv,
-        completedSteps: [1, 2],
       });
-      router.push('/upload/step3');
     });
+
+    router.push('/upload/step3');
   };
 
-  if (!uploadFormData.completedSteps.includes(1))
-    return redirect('/upload/step1');
   return (
     <form action={handleSubmit} className="w-full max-w-[606px] space-y-4">
       <div>
@@ -58,10 +55,11 @@ const Step2 = () => {
           id="jobTitle"
           name="jobTitle"
           placeholder="Position you apply for. Eg. Senior product designer."
-          value={jobTitle}
-          onChange={(e) => setJobTitle(e.target.value)}
+          value={uploadFormData.jobTitle}
+          onChange={(e) => setUploadFormData({ [e.target.id]: e.target.value })}
           required
           disabled={isPending}
+          minLength={2}
         />
       </div>
 
@@ -76,10 +74,11 @@ const Step2 = () => {
           id="companyName"
           name="companyName"
           placeholder="Name of the company you apply to."
-          value={companyName}
-          onChange={(e) => setCompanyName(e.target.value)}
+          value={uploadFormData.companyName}
+          onChange={(e) => setUploadFormData({ [e.target.id]: e.target.value })}
           required
           disabled={isPending}
+          minLength={2}
         />
       </div>
 
@@ -94,15 +93,21 @@ const Step2 = () => {
           id="jobDescription"
           name="jobDescription"
           placeholder="Paste the text of job offer description."
-          value={jobDescription}
-          onChange={(e) => setJobDescription(e.target.value)}
+          value={uploadFormData.jobDescription}
+          onChange={(e) => setUploadFormData({ [e.target.id]: e.target.value })}
           required
           disabled={isPending}
+          minLength={2}
         />
       </div>
 
       <Button
-        disabled={isPending || !jobTitle || !jobDescription || !companyName}
+        disabled={
+          isPending ||
+          !uploadFormData.jobTitle ||
+          !uploadFormData.jobDescription ||
+          !uploadFormData.companyName
+        }
         type="submit"
         className="w-full"
       >
