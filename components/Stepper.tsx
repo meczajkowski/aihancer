@@ -1,5 +1,4 @@
 'use client';
-import { useUploadFormData } from '@/app/contexts/FormDataContext';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
@@ -11,26 +10,14 @@ const steps = [
 ];
 
 export default function Stepper() {
-  const { uploadFormData } = useUploadFormData();
   const pathname = usePathname();
   const currentStep = pathname.split('/').pop();
-
-  const handleStepClick = (e: React.MouseEvent, stepNumber: number) => {
-    if (stepNumber === 1) return;
-    if (!uploadFormData.completedSteps.includes(stepNumber - 1)) {
-      e.preventDefault();
-      alert('Please complete the previous step first');
-    }
-  };
 
   return (
     <div className="relative mx-auto mb-8 flex w-full max-w-xs items-center justify-center md:max-w-md">
       {steps.map((step, index) => (
         <React.Fragment key={index}>
-          <Link
-            href={`/upload/step${index + 1}`}
-            onClick={(e) => handleStepClick(e, index + 1)}
-          >
+          <Link href={`/upload/step${index + 1}`}>
             <div className="relative flex cursor-pointer flex-col items-center">
               <div
                 className={`flex h-6 w-6 items-center justify-center rounded-full border md:h-9 md:w-9 ${

@@ -1,75 +1,66 @@
 'use client';
 
-import { extractTextFromPDF } from '@/app/actions/extractTextFromFile';
-import { getAnonToken } from '@/app/actions/getAnonToken';
+import { stepOneFormAction } from '@/app/actions/stepOneFormAction';
 import { useUploadFormData } from '@/app/contexts/FormDataContext';
+import { FormErrors } from '@/app/types';
 import { Button } from '@/components/ui/button';
-import { createCV } from '@/lib/prisma/CV.service';
-import { cn, validateFile } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
-import { useState, useTransition } from 'react';
+import { cn } from '@/lib/utils';
+import { stepOneSchema } from '@/schemas/stepOneSchema';
+import { useActionState, useEffect, useState } from 'react';
+
+const initialFormState: FormErrors = {};
 
 const Step1 = () => {
-  const [file, setFile] = useState<File | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
-  const { setUploadFormData } = useUploadFormData();
-  const router = useRouter();
+  const { uploadFormData, setUploadFormData } = useUploadFormData();
+  const [error, setError] = useState<string>('');
+  const [serverErrors, formAction, isPending] = useActionState(
+    stepOneFormAction,
+    initialFormState,
+  );
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError('');
     const uploadedFile = e.target.files?.[0] || null;
 
     if (!uploadedFile) {
-      setError('File is required.');
+      setError('');
+      setUploadFormData({ file: null });
       return;
     }
 
-    const validationError = validateFile(uploadedFile);
-    if (validationError) {
-      setError(validationError);
-      return;
+    const validated = stepOneSchema.safeParse({ cvFile: uploadedFile });
+    if (!validated.success) {
+      const errors = validated.error.issues.reduce((acc: FormErrors, issue) => {
+        acc[issue.path[0]] = issue.message;
+        return acc;
+      }, {});
+      setError(errors.cvFile || 'Something went wrong');
     }
-
-    setError(null);
-    setFile(uploadedFile);
     setUploadFormData({ file: uploadedFile });
   };
 
-  const handleSubmit = async (form: FormData) => {
-    startTransition(async () => {
-      try {
-        const extractedText = await extractTextFromPDF(form);
-        const anonToken = await getAnonToken();
-        const data = await createCV({ extractedText, anonToken });
-
-        setUploadFormData({
-          extractedText: data.extractedText,
-          completedSteps: [1],
-        });
-        router.push('/upload/step2');
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'An unexpected error occurred.',
-        );
-      }
-    });
-  };
+  // Reset form data on mount because of uncontrolled input
+  useEffect(() => {
+    setUploadFormData({ file: null });
+  }, []);
 
   return (
-    <form action={handleSubmit} className="w-full max-w-[606px]">
+    <form action={formAction} className="w-full max-w-[606px]">
       <div className="my-5 rounded-lg border bg-white p-6 shadow-[0_0_100px_100px_rgba(255,255,255,1)]">
         <h3>Upload your resume</h3>
         <span className="text-xs">Accepted types: PDF, docx</span>
         <div
           className={cn(
             'relative mt-4 w-full rounded-[10px] border border-dashed py-9 text-center',
-            error && 'border-red-200',
+            (serverErrors?.cvFile || error) && 'border-red-200',
           )}
         >
-          {file?.name && !error ? file.name : 'Drop file'}
-          {error && (
+          {uploadFormData.file?.name && (!serverErrors?.cvFile || !error)
+            ? uploadFormData.file.name
+            : 'Drop file'}
+          {(serverErrors?.cvFile || error) && (
             <span className="absolute bottom-2 block w-full text-xs text-red-500">
-              {error}
+              {serverErrors?.cvFile || error}
             </span>
           )}
         </div>
@@ -77,8 +68,8 @@ const Step1 = () => {
         <div className="flex justify-center">
           <input
             type="file"
-            id="file-upload"
-            name="cv-file"
+            id="fileUpload"
+            name="cvFile"
             className="hidden"
             onChange={handleFileChange}
             required
@@ -90,13 +81,19 @@ const Step1 = () => {
             variant={'outline'}
             className="mt-4 h-auto cursor-pointer bg-transparent"
           >
-            <label htmlFor="file-upload" className="h-full">
+            <label htmlFor="fileUpload" className="h-full">
               Choose file
             </label>
           </Button>
         </div>
       </div>
-      <Button disabled={!file || isPending} type="submit" className="w-full">
+      <Button
+        disabled={
+          !uploadFormData.file || isPending || !!serverErrors?.cvFile || !!error
+        }
+        type="submit"
+        className="w-full"
+      >
         {!isPending ? 'Go to adding a job' : 'Loading...'}
       </Button>
     </form>

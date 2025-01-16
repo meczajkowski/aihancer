@@ -22,3 +22,20 @@ export const createCV = async ({
     throw new Error('Failed to upload CV. Please try again later.');
   }
 };
+
+export const getLastCVbyAnonToken = async (anonToken: string) => {
+  try {
+    const data = await prisma.cV.findFirst({
+      where: {
+        anonToken,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+    return data;
+  } catch (error) {
+    console.error('Failed to get CV:', error);
+    throw new Error('Failed to get CV. Please try again later.');
+  }
+};
