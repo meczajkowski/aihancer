@@ -6,12 +6,31 @@ const allowedFileTypes = [
 ];
 const MAX_FILE_SIZE = 2000000;
 
+// Helper function to check if we're in a browser environment
+const isBrowser = typeof window !== 'undefined';
+
 export const stepOneSchema = z.object({
   cvFile: z
-    .instanceof(File)
-    .refine((file: File) => file.name, 'File is required')
-    .refine((file) => file.size < MAX_FILE_SIZE, 'Max size is 2MB.')
-    .refine((file) => allowedFileTypes.includes(file.type), {
-      message: 'Invalid file type. Only PDF and DOCX files are allowed.',
-    }),
+    .any()
+    .refine((file) => {
+      if (!isBrowser) return true; // Skip validation on server
+      return file instanceof File;
+    }, 'Must be a file')
+    .refine((file) => {
+      if (!isBrowser) return true; // Skip validation on server
+      return file.name;
+    }, 'File is required')
+    .refine((file) => {
+      if (!isBrowser) return true; // Skip validation on server
+      return file.size < MAX_FILE_SIZE;
+    }, 'Max size is 2MB.')
+    .refine(
+      (file) => {
+        if (!isBrowser) return true; // Skip validation on server
+        return allowedFileTypes.includes(file.type);
+      },
+      {
+        message: 'Invalid file type. Only PDF and DOCX files are allowed.',
+      },
+    ),
 });

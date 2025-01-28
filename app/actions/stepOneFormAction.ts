@@ -1,8 +1,11 @@
 'use server';
 
+import { createCV } from '@/lib/prisma/CV.service';
 import { stepOneSchema } from '@/schemas/stepOneSchema';
 import { redirect } from 'next/navigation';
 import { FormErrors } from '../types';
+import { extractTextFromPDF } from './extractTextFromFile';
+import { getAnonToken } from './getAnonToken';
 
 export const stepOneFormAction = async (
   prevState: unknown,
@@ -19,11 +22,11 @@ export const stepOneFormAction = async (
     return errors;
   } else {
     try {
-      // const file = formData.get('cvFile') as File;
-      // const extractedText = await extractTextFromPDF(file);
-      // const anonToken = await getAnonToken();
-      // console.log(file, extractedText, anonToken);
-      // await createCV({ extractedText, anonToken });
+      const file = formData.get('cvFile') as File;
+      const extractedText = await extractTextFromPDF(file);
+      const anonToken = await getAnonToken();
+      console.log(file, extractedText, anonToken);
+      await createCV({ extractedText, anonToken });
     } catch (err) {
       if (err) {
         const error = err.toString();
