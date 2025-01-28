@@ -56,7 +56,7 @@ const Step1 = () => {
           )}
         >
           {uploadFormData.file?.name && (!serverErrors?.cvFile || !error)
-            ? uploadFormData.file.name
+            ? uploadFormData.file?.name
             : 'Drop file'}
           {(serverErrors?.cvFile || error) && (
             <span className="absolute bottom-2 block w-full text-xs text-red-500">
